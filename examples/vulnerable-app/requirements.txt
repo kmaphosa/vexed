@@ -1,0 +1,7 @@
+# Deliberately outdated pins -- demo target for VEXed. Do NOT deploy this app.
+Flask==1.1.2
+Werkzeug==1.0.1
+Jinja2==2.11.2
+PyYAML==5.3.1
+requests==2.25.1
+urllib3==1.26.4
