@@ -164,4 +164,9 @@ with gr.Blocks(title="VEXed — is this CVE actually my problem?") as demo:
     demo_btn.click(run_demo, [max_llm], outs)
 
 if __name__ == "__main__":
-    demo.launch()
+    # Hosting platforms (Render, Railway, Fly, ...) provide $PORT and need 0.0.0.0
+    port = os.getenv("PORT")
+    if port:
+        demo.launch(server_name="0.0.0.0", server_port=int(port))
+    else:
+        demo.launch()
