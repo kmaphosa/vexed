@@ -76,7 +76,9 @@ Return ONLY JSON:
 class Nemotron:
     def __init__(self, api_key: Optional[str] = None, model: Optional[str] = None):
         from openai import OpenAI
-        key = api_key or os.getenv(API_KEY_ENV)
+        key = api_key or os.getenv(API_KEY_ENV) or ""
+        # copy/paste from browsers and chat apps can add invisible characters or quotes
+        key = re.sub(r"[^A-Za-z0-9._\-]", "", key)
         if not key:
             raise RuntimeError(f"{API_KEY_ENV} is not set")
         self.client = OpenAI(base_url=BASE_URL, api_key=key, timeout=90, max_retries=2)
