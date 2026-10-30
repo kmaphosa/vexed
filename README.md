@@ -53,6 +53,7 @@ python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 export NEBIUS_API_KEY=...            # from https://tokenfactory.nebius.com
 # optional: export NEBIUS_MODEL=<exact Nemotron model id from your console>
+python -m vexed.check               # confirms the key works and shows which Nemotron model is used
 python app.py                        # http://127.0.0.1:7860
 ```
 

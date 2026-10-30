@@ -99,7 +99,7 @@ class Nemotron:
         return nemo[0]
 
     # ------------------------------------------------------------ plumbing
-    def _ask(self, prompt: str, max_tokens: int = 700) -> dict:
+    def _ask(self, prompt: str, max_tokens: int = 2500) -> dict:
         h = hashlib.sha256(f"{self.model}\n{prompt}".encode()).hexdigest()
         with self._lock:
             if h in self._cache:
@@ -114,7 +114,11 @@ class Nemotron:
             temperature=0,
             max_tokens=max_tokens,
         )
-        result = parse_json(resp.choices[0].message.content or "")
+        msg = resp.choices[0].message
+        text = msg.content or ""
+        if "{" not in text:          # reasoning models may put everything in reasoning_content
+            text += "\n" + (getattr(msg, "reasoning_content", None) or "")
+        result = parse_json(text)
         with self._lock:
             self._cache[h] = result
         return result
@@ -123,7 +127,7 @@ class Nemotron:
     def extract_symbols(self, vuln) -> dict:
         out = self._ask(SYMBOLS_PROMPT.format(
             pkg=vuln.package.name, vid=vuln.id, summary=vuln.summary,
-            details=vuln.details[:3000]), max_tokens=400)
+            details=vuln.details[:3000]), max_tokens=1500)
         syms = [str(s) for s in out.get("symbols", []) if s][:6]
         return {"symbols": syms, "trigger": str(out.get("trigger", ""))}
 
@@ -144,7 +148,9 @@ def parse_json(text: str) -> dict:
     try:
         return json.loads(text)
     except json.JSONDecodeError:
-        m = re.search(r"\{.*\}", text, flags=re.S)
+        m = None
+        for m in re.finditer(r"\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}", text, flags=re.S):
+            pass                       # keep the LAST JSON object (the final answer)
         if m:
             try:
                 return json.loads(m.group(0))
