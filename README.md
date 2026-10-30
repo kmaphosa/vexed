@@ -1,20 +1,13 @@
 ---
-title: VEXed
-emoji: 🛡️
-colorFrom: green
-colorTo: indigo
-sdk: gradio
-app_file: app.py
-pinned: false
-license: mit
-short_description: Is this CVE actually my problem? Nemotron reachability triage
+Title: VEXed
+License: MIT
+Description: Nemotron CVE atack vector triage
 ---
 
-# VEXed — is this CVE actually my problem?
+# VEXed, is this CVE actually my problem ?
 
 Dependency scanners tell you that you have 40 CVEs. They don't tell you which ones
-your code can actually reach. Developers end up either ignoring the whole list or
-burning days upgrading things that never mattered.
+your code can actually reach.
 
 **VEXed** triages every vulnerability in your dependency tree against *your* source code:
 
